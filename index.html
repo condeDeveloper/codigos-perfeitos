@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Códigos perfeitos — cobrir tudo uma vez só</title>
+<meta name="description" content="C&#243;digos perfeitos em grafos varridos por cobertura exata: o cubo Q7 tem 240, o grafo de Desargues passa na condi&#231;&#227;o de contagem e n&#227;o tem nenhum, e s&#243; 12 das 36 grades at&#233; 8x8 t&#234;m algum.">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<header>
+  <h1>Códigos perfeitos</h1>
+  <p>Escolher vértices de um grafo de modo que cada vértice seja coberto <strong>exatamente uma vez</strong> — ou está escolhido, ou tem um único vizinho escolhido. É um ladrilhamento do grafo por vizinhanças, e quase nunca dá certo.</p>
+</header>
+
+<main>
+
+<section>
+  <h2>Tente montar um</h2>
+  <div class="painel">
+    <div class="linha" style="margin-bottom:14px">
+      <select id="grafo" aria-label="grafo">
+        <option value="grade-4x4" selected>grade 4×4</option>
+        <option value="grade-3x5">grade 3×5</option>
+        <option value="toro-5x5">toro 5×5</option>
+        <option value="ciclo-9">ciclo C9</option>
+        <option value="ciclo-10">ciclo C10</option>
+        <option value="cubo-3">cubo Q3</option>
+        <option value="petersen">Petersen</option>
+        <option value="heawood">Heawood</option>
+        <option value="mobius">Möbius-Kantor</option>
+        <option value="desargues">Desargues</option>
+      </select>
+      <button id="mostrar" type="button">Mostrar um código</button>
+      <button id="proximo" type="button">O próximo</button>
+      <button id="limpar" type="button">Limpar</button>
+    </div>
+    <div id="tela"></div>
+    <p id="recado"></p>
+    <p id="info"></p>
+  </div>
+</section>
+
+<section>
+  <h2>A condição de contagem é necessária, e não basta</h2>
+  <div class="painel">
+    <p style="margin:0 0 12px">
+      Num grafo k-regular, cada vértice do código cobre k+1 vértices e as coberturas não se tocam.
+      Então <strong>(k+1) tem que dividir n</strong>. É uma peneira barata — e o que ela deixa passar
+      não precisa existir:
+    </p>
+    <table>
+      <thead><tr><th>grafo</th><th>vértices</th><th>grau</th><th>peneira</th><th>teria</th><th>códigos</th></tr></thead>
+      <tbody>
+        <tr><td>Petersen</td><td>10</td><td>3</td><td class="aviso">barra</td><td>—</td><td>0</td></tr>
+        <tr><td>Heawood</td><td>14</td><td>3</td><td class="aviso">barra</td><td>—</td><td>0</td></tr>
+        <tr><td>Möbius-Kantor</td><td>16</td><td>3</td><td>passa</td><td>4</td><td>4</td></tr>
+        <tr><td>Desargues</td><td>20</td><td>3</td><td>passa</td><td>5</td><td class="forte">0</td></tr>
+        <tr><td>Nauru</td><td>24</td><td>3</td><td>passa</td><td>6</td><td>4</td></tr>
+        <tr><td>Dyck</td><td>32</td><td>3</td><td>passa</td><td>8</td><td>16</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:14px 0 0;color:var(--fraco);font-size:0.92rem">
+      Em <span class="forte">13</span> casos a peneira deixou passar, e em <span class="forte">6</span>
+      deles não existe código nenhum. O Desargues é o retrato: 20 vértices, grau 3, 20 dividido por 4
+      dá 5 certinho — e a busca não acha um só.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>O cubo, e o código de Hamming</h2>
+  <div class="painel">
+    <table>
+      <thead><tr><th>cubo</th><th>vértices</th><th>peneira</th><th>códigos</th><th>tamanho</th><th>Hamming está entre eles</th></tr></thead>
+      <tbody>
+        <tr><td>Q1</td><td>2</td><td>passa</td><td>2</td><td>1</td><td>sim</td></tr>
+        <tr><td>Q2</td><td>4</td><td class="aviso">barra</td><td>0</td><td>—</td><td>—</td></tr>
+        <tr><td>Q3</td><td>8</td><td>passa</td><td>4</td><td>2</td><td>sim</td></tr>
+        <tr><td>Q4 · Q5 · Q6</td><td>16 · 32 · 64</td><td class="aviso">barra</td><td>0</td><td>—</td><td>—</td></tr>
+        <tr><td>Q7</td><td>128</td><td>passa</td><td class="forte">240</td><td>16</td><td>sim</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:14px 0 0;color:var(--fraco);font-size:0.92rem">
+      O código de Hamming de comprimento 7 é construído, não procurado: as palavras cujo síndrome pela
+      matriz de paridade dá zero. Ele é <span class="forte">um dos 240</span> que a busca acha — e o
+      cubo só passa na peneira quando a dimensão é 1, 3, 7, 15…, ou seja, 2<sup>r</sup> − 1.
+      Para encontrar esses 240 a busca gastou <span class="forte">24.392</span> nós; a força bruta
+      precisaria de 2<sup>128</sup> subconjuntos.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>Grades, toros e ciclos</h2>
+  <div class="painel">
+    <p style="margin:0 0 12px">Quantos códigos perfeitos tem cada grade m × n:</p>
+    <table>
+      <thead><tr><th>m \ n</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>1</td><td>2</td><td>1</td><td>1</td><td>2</td><td>1</td><td>1</td><td>2</td></tr>
+        <tr><td>2</td><td>·</td><td>0</td><td>2</td><td>0</td><td>2</td><td>0</td><td>2</td><td>0</td></tr>
+        <tr><td>3</td><td>·</td><td>·</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>4</td><td>·</td><td>·</td><td>·</td><td class="forte">2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td>5 a 8</td><td>·</td><td>·</td><td>·</td><td>·</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:14px 0 0;color:var(--fraco);font-size:0.92rem">
+      Das 36 grades até 8×8, só <span class="forte">12</span> têm algum código: todas as 1×n, as 2×n
+      de n ímpar, e o <span class="forte">4×4</span> — a única grade quadrada de lado 2 a 8 que tem.
+      Nos toros é mais seco ainda: de 3×3 a 8×8, só o <span class="forte">5×5</span> tem, com 10
+      códigos. E no ciclo C<sub>n</sub> existe exatamente quando 3 divide n, sempre com 3 códigos —
+      enquanto o caminho P<sub>n</sub> <span class="forte">sempre</span> tem, 2 deles quando n deixa
+      resto 2 na divisão por 3.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    <a href="https://github.com/condeDeveloper/codigos-perfeitos">Código e números no GitHub</a> ·
+    JavaScript puro, sem dependência e sem build.
+  </p>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
