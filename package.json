@@ -1,0 +1,13 @@
+{
+  "name": "codigos-perfeitos",
+  "version": "1.0.0",
+  "description": "Codigos perfeitos em grafos: toda vizinhanca fechada coberta exatamente uma vez",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test testes/*.test.js",
+    "medir": "node ferramentas/medidor.js"
+  }
+}
