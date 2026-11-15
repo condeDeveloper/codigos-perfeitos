@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  testes:
+    name: testes (${{ matrix.so }}, node ${{ matrix.node }})
+    runs-on: ${{ matrix.so }}
+    strategy:
+      fail-fast: false
+      matrix:
+        so: [ubuntu-latest, windows-latest, macos-latest]
+        node: ['20', '22', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: nucleo e medidas
+        shell: bash
+        run: node --test testes/nucleo.test.js testes/medidas.test.js
+      - name: o cubo de 128 vertices e o catalogo
+        shell: bash
+        run: node --test testes/pesados.test.js
+
+  medidas:
+    name: tabelas do README
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: ciclos e caminhos contra a conta
+        run: node ferramentas/medidor.js familias
+      - name: as grades
+        run: node ferramentas/medidor.js grades
+      - name: os toros
+        run: node ferramentas/medidor.js toros
+      - name: os cubos e o codigo de Hamming
+        run: node ferramentas/medidor.js cubos
+      - name: os grafos de nome proprio
+        run: node ferramentas/medidor.js nomeados
+      - name: a peneira que nao basta
+        run: node ferramentas/medidor.js peneira
+      - name: a cobertura exata contra a forca bruta
+        run: node ferramentas/medidor.js preco
